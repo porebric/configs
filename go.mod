@@ -3,7 +3,7 @@ module github.com/porebric/configs
 go 1.21
 
 require (
-	github.com/porebric/logger v0.0.0-20231130155923-a4a8cf29b32c
+	github.com/porebric/logger v0.1.0
 	github.com/stretchr/testify v1.8.4
 	gopkg.in/yaml.v3 v3.0.1
 )
