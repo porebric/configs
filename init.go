@@ -1,7 +1,8 @@
-package conf
+package configs
 
 import (
 	"context"
+	"github.com/porebric/configs/config"
 	"github.com/porebric/configs/config/env"
 	"io"
 
@@ -17,7 +18,7 @@ type Storage struct {
 	keysReader        io.Reader
 	yamlConfigsReader io.Reader
 
-	configsProviders map[keys.SourceType]configs.Provider
+	configsProviders map[keys.SourceType]config.Provider
 }
 
 type keyTypes struct {
@@ -44,7 +45,7 @@ func (s *Storage) Init(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	s.configsProviders = make(map[keys.SourceType]configs.Provider)
+	s.configsProviders = make(map[keys.SourceType]config.Provider)
 
 	keysStorage.yamlConfigs = make(map[string]bool)
 	if s.yamlConfigsReader != nil {
@@ -65,7 +66,7 @@ func (s *Storage) Init(ctx context.Context) error {
 	return err
 }
 
-func Value(ctx context.Context, key string) *configs.Value {
+func Value(ctx context.Context, key string) *config.Value {
 	if _, ok := keysStorage.yamlConfigs[key]; ok {
 		return providerStorage.configsProviders[keys.Yaml].Value(key)
 	}
@@ -78,7 +79,7 @@ func Value(ctx context.Context, key string) *configs.Value {
 	return nil
 }
 
-func Watch(ctx context.Context, key string, fns ...configs.WatchFn) *configs.Value {
+func Watch(ctx context.Context, key string, fns ...config.WatchFn) *config.Value {
 	if _, ok := keysStorage.yamlConfigs[key]; ok {
 		return providerStorage.configsProviders[keys.Yaml].Watch(ctx, key, fns...)
 	}
