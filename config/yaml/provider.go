@@ -34,7 +34,7 @@ func Init(ctx context.Context, r io.Reader, k map[string]keys.ConfigType) (*prov
 		strValue, ok := yamlData.Value[name]
 		if !ok {
 			logger.Debug(ctx, "yaml: value does not exist in yaml", "key", name)
-			if val := configs.Convert(ctx, key.Default, key.Type); val != nil {
+			if val := config.Convert(ctx, key.Default, key.Type); val != nil {
 				p.values[name] = config.New(val, name)
 			}
 			continue
