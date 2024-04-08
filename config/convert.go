@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/porebric/logger"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/porebric/logger"
 )
 
 func Convert(ctx context.Context, v string, t string) any {
@@ -21,18 +22,14 @@ func Convert(ctx context.Context, v string, t string) any {
 		if err == nil {
 			return value
 		}
-
-		err = fmt.Errorf("strconv.Atoi: %w", err)
-		logger.Error(ctx, err, "convert error")
+		logger.Error(ctx, fmt.Errorf("strconv.Atoi: %w", err), "convert error")
 
 	case TypeFloat:
 		value, err := strconv.ParseFloat(v, 64)
 		if err == nil {
 			return value
 		}
-
-		err = fmt.Errorf("strconv.ParseFloat: %w", err)
-		logger.Error(ctx, err, "convert error")
+		logger.Error(ctx, fmt.Errorf("strconv.ParseFloat: %w", err), "convert error")
 
 	case TypeBool:
 		value, err := strconv.ParseBool(v)
@@ -40,8 +37,7 @@ func Convert(ctx context.Context, v string, t string) any {
 			return value
 		}
 
-		err = fmt.Errorf("strconv.ParseBool: %w", err)
-		logger.Error(ctx, err, "convert error")
+		logger.Error(ctx, fmt.Errorf("strconv.ParseBool: %w", err), "convert error")
 
 	case TypeDuration:
 		value, err := time.ParseDuration(v)
@@ -49,8 +45,7 @@ func Convert(ctx context.Context, v string, t string) any {
 			return value
 		}
 
-		err = fmt.Errorf("time.ParseDuration: %w", err)
-		logger.Error(ctx, err, "convert error")
+		logger.Error(ctx, fmt.Errorf("time.ParseDuration: %w", err), "convert error")
 
 	case TypeIntMap:
 		value := make(map[string]int)
@@ -68,6 +63,20 @@ func Convert(ctx context.Context, v string, t string) any {
 			}
 		}
 		if err == nil {
+			return value
+		}
+		logger.Error(ctx, fmt.Errorf("parse map: %w", err), "convert error")
+	case TypeStringSlice:
+		elems := strings.Split(v, ",")
+		value := make([]string, len(elems))
+		var err error
+		for i, elem := range elems {
+			value[i] = elem
+		}
+		if err == nil {
+			if len(value) == 0 {
+				logger.Warn(ctx, "empty string slice", "value", v)
+			}
 			return value
 		}
 		logger.Error(ctx, fmt.Errorf("parse map: %w", err), "convert error")

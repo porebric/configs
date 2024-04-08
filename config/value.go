@@ -11,12 +11,13 @@ import (
 )
 
 const (
-	TypeString   = "string"
-	TypeInt      = "int"
-	TypeFloat    = "float"
-	TypeBool     = "bool"
-	TypeDuration = "duration"
-	TypeIntMap   = "int_map"
+	TypeString      = "string"
+	TypeInt         = "int"
+	TypeFloat       = "float"
+	TypeBool        = "bool"
+	TypeDuration    = "duration"
+	TypeIntMap      = "int_map"
+	TypeStringSlice = "string_slice"
 )
 
 type WatchFn func(oldValue *Value, newValue *Value) error
@@ -132,8 +133,23 @@ func (v *Value) IntMap() map[string]int {
 	if ok {
 		return value
 	}
-	logErrorType(v, TypeDuration)
+	logErrorType(v, TypeIntMap)
 	return make(map[string]int)
+}
+
+func (v *Value) StringSlice() []string {
+	if v == nil {
+		return []string{}
+	}
+
+	v.mu.RLock()
+	value, ok := v.value.([]string)
+	v.mu.RUnlock()
+	if ok {
+		return value
+	}
+	logErrorType(v, TypeStringSlice)
+	return []string{}
 }
 
 func (v *Value) Update(ctx context.Context, val any) {

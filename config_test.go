@@ -42,7 +42,11 @@ const (
   source: yaml
  key10:
   type: int_map
-  default: '{"4242424242424242": 3}'
+  default: '4242424242424242:3'
+  source: yaml
+ key13:
+  type: string_slice
+  default: 'test,test2,test3'
   source: yaml
  key11:
   type: string
@@ -60,7 +64,8 @@ const (
   key4: true
   key5: 30m
   key6: "str2"
-  key10: 2222222222222222:1,5454545454545454:2`
+  key10: 2222222222222222:1,5454545454545454:2
+  key13: test,test2,test3`
 )
 
 func Test_YamlValue(t *testing.T) {
@@ -93,6 +98,8 @@ func Test_YamlValue(t *testing.T) {
 		stringVal2 := Value(ctx, "key6").String()
 
 		intMap := Value(ctx, "key10").IntMap()
+		stringSlice := Value(ctx, "key13").StringSlice()
+		exceptStringSlice := []string{"test", "test2", "test3"}
 
 		// Assert
 		assert.Equal(t, "str", stringVal)
@@ -102,6 +109,7 @@ func Test_YamlValue(t *testing.T) {
 		assert.Equal(t, true, boolVal)
 		assert.Equal(t, exceptDuration, durationVal)
 		assert.Equal(t, exceptIntMap, intMap)
+		assert.Equal(t, exceptStringSlice, stringSlice)
 	})
 	t.Run("from default yaml", func(t *testing.T) {
 		t.Parallel()
